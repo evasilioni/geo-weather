@@ -11,7 +11,4 @@ import java.util.List;
 public interface LoginRepository extends JpaRepository<LoginUser, Long> {
 
     LoginUser findByUsername(String username);
-
-    @Query("select u from LoginUser u where u.username = :username and u.password = :password")
-    LoginUser findByUsernameAndPassword(@Param("username") String username, @Param("password") String password );
 }
