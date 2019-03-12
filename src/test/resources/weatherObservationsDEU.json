@@ -1,0 +1,42 @@
+[
+  {
+    "temperature": "11",
+    "stationName": "Colmar-Houssen"
+  },
+  {
+    "temperature": "10",
+    "stationName": "Epinal-Mirecourt"
+  },
+  {
+    "temperature": "7",
+    "stationName": "AWG-1     SEA"
+  },
+  {
+    "temperature": "8",
+    "stationName": "MEMMINGERBERG"
+  },
+  {
+    "temperature": "9",
+    "stationName": "Schwäbisch Hall-Hessental AAF"
+  },
+  {
+    "temperature": "9",
+    "stationName": "DUBENDORF"
+  },
+  {
+    "temperature": "9",
+    "stationName": "Zurich-Kloten"
+  },
+  {
+    "temperature": "8",
+    "stationName": "Bueckeburg"
+  },
+  {
+    "temperature": "10",
+    "stationName": "Duesseldorf"
+  },
+  {
+    "temperature": "9",
+    "stationName": "Groningen Airport Eelde"
+  }
+]

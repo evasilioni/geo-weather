@@ -1,7 +1,6 @@
-package com.silionie.server.loginTest;
+package com.silionie.server.login;
 
 import com.silionie.server.TestBase;
-import com.silionie.server.login.AuthenticationResponse;
 import org.junit.Test;
 import org.springframework.http.*;
 
@@ -22,7 +21,7 @@ public class LoginControllerTest extends TestBase {
         HttpEntity<String> httpEntity = new HttpEntity<>(request, headers);
 
         ResponseEntity<AuthenticationResponse> exchange = restTemplate.exchange(
-                getUri(),
+                getUri() + "/login",
                 HttpMethod.POST,
                 httpEntity,
                 AuthenticationResponse.class);
@@ -45,7 +44,7 @@ public class LoginControllerTest extends TestBase {
         HttpEntity<String> httpEntity = new HttpEntity<>(request, headers);
 
         ResponseEntity<AuthenticationResponse> exchange = restTemplate.exchange(
-                getUri(),
+                getUri() + "/login",
                 HttpMethod.POST,
                 httpEntity,
                 AuthenticationResponse.class);
@@ -68,16 +67,12 @@ public class LoginControllerTest extends TestBase {
         HttpEntity<String> httpEntity = new HttpEntity<>(request, headers);
 
         ResponseEntity<AuthenticationResponse> exchange = restTemplate.exchange(
-                getUri(),
+                getUri() + "/login",
                 HttpMethod.POST,
                 httpEntity,
                 AuthenticationResponse.class);
 
         assertEquals(HttpStatus.UNAUTHORIZED, exchange.getBody().getStatus());
 
-    }
-
-    private String getUri(){
-        return "http://localhost:" + apiPort + "/login";
     }
 }

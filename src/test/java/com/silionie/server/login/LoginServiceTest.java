@@ -1,8 +1,6 @@
-package com.silionie.server.loginTest;
+package com.silionie.server.login;
 
 import com.silionie.server.TestBase;
-import com.silionie.server.login.AuthenticationException;
-import com.silionie.server.login.LoginService;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;

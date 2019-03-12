@@ -1,8 +1,6 @@
-package com.silionie.server.loginTest;
+package com.silionie.server.login;
 
 import com.silionie.server.TestBase;
-import com.silionie.server.login.LoginRepository;
-import com.silionie.server.login.LoginUser;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 

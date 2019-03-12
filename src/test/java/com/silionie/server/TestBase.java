@@ -1,6 +1,5 @@
 package com.silionie.server;
 
-import com.silionie.server.loginTest.LoginControllerTest;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,7 +17,7 @@ import org.springframework.web.client.RestTemplate;
         },
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
-public class TestBase {
+public abstract class TestBase {
 
     @LocalServerPort
     protected Integer apiPort;
@@ -33,5 +32,9 @@ public class TestBase {
         public RestTemplate restTemplate(){
             return new RestTemplate();
         }
+    }
+
+    protected String getUri(){
+        return "http://localhost:" + apiPort;
     }
 }
