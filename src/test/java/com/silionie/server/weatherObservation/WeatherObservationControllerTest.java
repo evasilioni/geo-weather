@@ -1,55 +1,77 @@
 package com.silionie.server.weatherObservation;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.silionie.server.TestBase;
-import com.silionie.server.country.Country;
-import com.silionie.server.country.Geonames;
-import com.silionie.server.login.AuthenticationResponse;
+import com.silionie.server.login.LoginService;
+import com.silionie.server.login.LoginUser;
+import com.silionie.server.security.SecurityUser;
+import com.silionie.server.security.SecurityUserDetailsService;
+import com.silionie.server.security.TokenProvider;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
-import java.io.IOException;
-import java.util.List;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-public class WeatherObservationControllerTest extends TestBase {
+@RunWith(SpringRunner.class)
+@SpringBootTest
+public class WeatherObservationControllerTest {
+    private MockMvc mvc;
+    @Autowired
+    private WebApplicationContext context;
+    @MockBean
+    private TokenProvider tokenProvider;
+    @MockBean
+    private SecurityUserDetailsService securityUserDetailsService;
 
     @Autowired
-    private WeatherObservationService weatherObservationService;
+    private LoginService loginService;
+
+    @Before
+    public void setup() {
+        mvc = MockMvcBuilders
+                .webAppContextSetup(context)
+                .build();
+    }
 
     @Test
-    public void testWeatherObservationStations() throws IOException {
-//        String request = "{ \n" +
-//                "\t\"username\":\"ferryscanner\",\n" +
-//                "\t\"password\":\"P@ssword\"\n" +
-//                "}";
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.APPLICATION_JSON);
-//        HttpEntity<String> httpEntity = new HttpEntity<>(request, headers);
-//
-//        ResponseEntity<AuthenticationResponse> exchange = restTemplate.exchange(
-//                getUri() + "/login",
-//                HttpMethod.POST,
-//                httpEntity,
-//                AuthenticationResponse.class);
-//
-//        HttpHeaders headers2 = new HttpHeaders();
-//        headers.setContentType(MediaType.APPLICATION_JSON);
-//        headers.setBearerAuth(exchange.getBody().getToken());
-//        HttpEntity<String> httpEntity2 = new HttpEntity<>("", headers2);
-//
-//        ResponseEntity<WeatherobservationResponse> exchange2 = restTemplate.exchange(
-//                getUri() + "/weatherObservation",
-//                HttpMethod.GET,
-//                httpEntity,
-//                WeatherobservationResponse.class);
+    public void getWeatherObservationSuccessfully() throws Exception {
+        LoginUser user = new LoginUser();
+        user.setUsername("ferryscanner");
 
-//        assertThat(10, equalTo(stations.size()));
+        SecurityUser jwtUser = new SecurityUser.SecurityUserBuilder(user)
+                .build();
+
+        when(tokenProvider.getUserNameFromToken(any())).thenReturn(user.getUsername());
+        when(securityUserDetailsService.loadUserByUsername(eq(user.getUsername()))).thenReturn(jwtUser);
+
+        mvc.perform(get("/weatherObservation?isoAlphaCountyCode=DEU").header("Authorization", "Bearer nsodunsodiuv"))
+                .andExpect(status().is2xxSuccessful());
+    }
+
+    @Test
+    public void numberOfRequestsExceeded() throws Exception {
+        LoginUser user = loginService.findUser("ferryscanner");
+        user.setNumberOfRequests(user.getNumberOfRequests()+20001);
+
+        SecurityUser jwtUser = new SecurityUser.SecurityUserBuilder(user)
+                .build();
+
+        when(tokenProvider.getUserNameFromToken(any())).thenReturn(user.getUsername());
+        when(securityUserDetailsService.loadUserByUsername(eq(user.getUsername()))).thenReturn(jwtUser);
+
+        mvc.perform(get("/weatherObservation?isoAlphaCountyCode=DEU").header("Authorization", "Bearer nsodunsodiuv"))
+                .andExpect(jsonPath("$.status").value("TOO_MANY_REQUESTS"));
     }
 
 }

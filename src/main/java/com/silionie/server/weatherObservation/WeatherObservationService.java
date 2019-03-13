@@ -1,7 +1,10 @@
 package com.silionie.server.weatherObservation;
 import com.silionie.server.country.Country;
 import com.silionie.server.country.CountryService;
+import com.silionie.server.login.LoginService;
+import com.silionie.server.login.LoginUser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -33,6 +36,5 @@ public class WeatherObservationService {
         }
         return new ArrayList<>();
     }
-
 
 }

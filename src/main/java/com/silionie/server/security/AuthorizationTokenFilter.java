@@ -22,15 +22,15 @@ import java.io.IOException;
 @Component
 public class AuthorizationTokenFilter extends OncePerRequestFilter {
     @Autowired
-    private TokenProvider jwtTokenProvider;
+    private TokenProvider tokenProvider;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private SecurityUserDetailsService securityUserDetailsService;
 
-    public AuthorizationTokenFilter(TokenProvider jwtTokenProvider) {
-        this.jwtTokenProvider = jwtTokenProvider;
+    public AuthorizationTokenFilter(TokenProvider tokenProvider) {
+        this.tokenProvider = tokenProvider;
     }
 
     @Override
@@ -39,11 +39,11 @@ public class AuthorizationTokenFilter extends OncePerRequestFilter {
         logger.debug("processing authentication for '{}'",  httpServletRequest.getRequestURL());
 
 
-        String token = jwtTokenProvider.resolveToken(httpServletRequest);
+        String token = tokenProvider.resolveToken(httpServletRequest);
 
         String username = null;
         if ( token != null){
-            username = jwtTokenProvider.getUserNameFromToken(token);
+            username = tokenProvider.getUserNameFromToken(token);
         } else {
             logger.warn("couldn't find bearer string, will ignore the header");
         }
@@ -58,7 +58,7 @@ public class AuthorizationTokenFilter extends OncePerRequestFilter {
                 httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
                 return;
             }
-            if (jwtTokenProvider.validateToken(token)) {
+            if (tokenProvider.validateToken(token)) {
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));

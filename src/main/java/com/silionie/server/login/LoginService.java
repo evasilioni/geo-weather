@@ -3,6 +3,8 @@ package com.silionie.server.login;
 import com.silionie.server.security.SecurityUserDetailsService;
 import com.silionie.server.security.TokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -12,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 @Service
 public class LoginService {
@@ -23,7 +26,7 @@ public class LoginService {
     PasswordEncoder passwordEncoder;
 
     @Autowired
-    private TokenProvider jwtTokenProvider;
+    private TokenProvider tokenProvider;
 
     @Autowired
     private SecurityUserDetailsService securityUserDetailsService;
@@ -31,6 +34,7 @@ public class LoginService {
     @Autowired
     private LoginRepository loginRepository;
 
+    @Cacheable("loginUser")
     public LoginUser findUser(String username){
         return loginRepository.findByUsername(username);
     }
@@ -40,7 +44,7 @@ public class LoginService {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
             // Reload password post-security so we can generate the token
             final UserDetails userDetails = securityUserDetailsService.loadUserByUsername(username);
-            final String token = jwtTokenProvider.createToken(userDetails.getUsername(), new ArrayList<>());
+            final String token = tokenProvider.createToken(userDetails.getUsername(), new ArrayList<>());
 
             return token;
         }catch (DisabledException e) {

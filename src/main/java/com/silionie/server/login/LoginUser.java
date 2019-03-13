@@ -1,8 +1,11 @@
 package com.silionie.server.login;
 
+import org.springframework.cache.annotation.CachePut;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -18,6 +21,12 @@ public class LoginUser {
     private String username;
     private String password;
 
+    @Transient
+    private Long numberOfRequests = 0L;
+
+    @Transient
+    private Date currentDay = new Date();
+
     public LoginUser() {
     }
 
@@ -25,7 +34,6 @@ public class LoginUser {
         this.username = username;
         this.password = password;
     }
-
     public Long getId() {
         return id;
     }
@@ -59,5 +67,15 @@ public class LoginUser {
         return roles;
     }
 
+    public Long getNumberOfRequests() {
+        return numberOfRequests;
+    }
 
+    public Date getCurrentDay() {
+        return currentDay;
+    }
+
+    public void setNumberOfRequests(Long numberOfRequests) {
+        this.numberOfRequests = numberOfRequests;
+    }
 }
