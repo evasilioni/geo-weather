@@ -1,4 +1,4 @@
-package com.silionie.server.weatherObservation;
+package com.silionie.server.country;
 
 import com.silionie.server.login.LoginService;
 import com.silionie.server.login.LoginUser;
@@ -13,6 +13,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -27,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class WeatherObservationControllerTest {
+public class CountryControllerTest {
     private MockMvc mvc;
     @Autowired
     private WebApplicationContext context;
@@ -47,7 +49,7 @@ public class WeatherObservationControllerTest {
     }
 
     @Test
-    public void getWeatherObservationSuccessfully() throws Exception {
+    public void getCountryIsoAlphaCodeSuccessfully() throws Exception {
         LoginUser user = new LoginUser();
         user.setUsername("ferryscanner");
 
@@ -57,46 +59,10 @@ public class WeatherObservationControllerTest {
         when(tokenProvider.getUserNameFromToken(any())).thenReturn(user.getUsername());
         when(securityUserDetailsService.loadUserByUsername(eq(user.getUsername()))).thenReturn(jwtUser);
 
-        mvc.perform(get("/weatherObservation?isoAlphaCountyCode=DEU").header("Authorization", "Bearer nsodunsodiuv"))
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/country/isoAlphaCode?countryCode=DE")
+                .header("Authorization", "Bearer nsodunsodiuv");
+        mvc.perform(builder)
                 .andExpect(status().is2xxSuccessful());
-    }
-
-    @Test
-    public void numberOfRequestsExceeded() throws Exception {
-        LoginUser user = loginService.findUser("ferryscanner");
-        user.setNumberOfRequests(user.getNumberOfRequests()+20001);
-
-        SecurityUser jwtUser = new SecurityUser.SecurityUserBuilder(user)
-                .build();
-
-        when(tokenProvider.getUserNameFromToken(any())).thenReturn(user.getUsername());
-        when(securityUserDetailsService.loadUserByUsername(eq(user.getUsername()))).thenReturn(jwtUser);
-
-        mvc.perform(get("/weatherObservation?isoAlphaCountyCode=DEU").header("Authorization", "Bearer nsodunsodiuv"))
-                .andExpect(jsonPath("$.status").value("TOO_MANY_REQUESTS"));
-    }
-
-    @Test
-    public void testNumberOfRequestIncrement() throws Exception {
-        LoginUser ferryscanner = loginService.findUser("ferryscanner");
-        SecurityUser jwtUser = new SecurityUser.SecurityUserBuilder(ferryscanner)
-                .build();
-
-        when(tokenProvider.getUserNameFromToken(any())).thenReturn(ferryscanner.getUsername());
-        when(securityUserDetailsService.loadUserByUsername(eq(ferryscanner.getUsername()))).thenReturn(jwtUser);
-
-        for(int i=0;i<100;i++){
-            System.out.println("Request:"+i+" from "+ ferryscanner);
-            if(ferryscanner.getNumberOfRequests()<=20000){
-                mvc.perform(get("/weatherObservation?isoAlphaCountyCode=DEU").header("Authorization", "Bearer nsodunsodiuv"))
-                        .andExpect(jsonPath("$.status").value("OK"));
-            }else {
-                mvc.perform(get("/weatherObservation?isoAlphaCountyCode=DEU").header("Authorization", "Bearer nsodunsodiuv"))
-                        .andExpect(jsonPath("$.status").value("TOO_MANY_REQUESTS"));
-            }
-
-        }
-
     }
 
 }

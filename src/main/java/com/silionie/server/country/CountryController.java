@@ -3,8 +3,6 @@ package com.silionie.server.country;
 import com.silionie.server.login.LoginService;
 import com.silionie.server.login.LoginUser;
 import com.silionie.server.security.TokenProvider;
-import com.silionie.server.weatherObservation.WeatherobservationResponse;
-import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
 
 import static com.silionie.server.security.Constants.HEADER_STRING;
 

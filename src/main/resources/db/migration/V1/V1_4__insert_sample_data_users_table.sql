@@ -1,7 +1,7 @@
 BEGIN;
 
 insert into USERS (user_name, password) values ('ferryscanner','P@ssword');
-insert into USERS (user_name, password) values ('ferryscanner1','P@ssword1');
+insert into USERS (user_name, password) values ('demo','P@ssword1');
 insert into USERS (user_name, password) values ('ferryscanner2','P@ssword2');
 insert into USERS (user_name, password) values ('ferryscanner3','P@ssword3');
 
