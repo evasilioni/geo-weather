@@ -14,6 +14,8 @@ Nothing needs to be installed. Even the database used, is h2 in memory database.
 
 **Running the tests**
 mvn test :  in order to run the tests of the application
+Two tests fail when the whole suite runs however when this tests run isolated, are successful.
+However I did'nt had the time to find out why.
 
 **Break down into end to end tests**
 Tests are Integration and Unit test for every feature, service
@@ -24,8 +26,17 @@ Maven - Dependency Management
 **Contributing**
 Please read README.md for details on our code of conduct.
 
-Versioning
-We use SemVer for versioning. For the versions available, see the tags on this repository.
+**endpoints**
+1. http://localhost:8085/login
+--> body example : {
+                   	"username":"ferryscanner",
+                   	"password":"P@ssword"
+                   }
+2.http://localhost:8085/country/isoAlphaCode?countryCode={countryCode}  
+--> Authorisation token in headers                 
+
+3.http://localhost:8085/weatherObservation?isoAlphaCountyCode={isoAlphaCode}
+--> Authorisation token in headers
 
 **Security**
 JWT security has been used for the authentication process.
